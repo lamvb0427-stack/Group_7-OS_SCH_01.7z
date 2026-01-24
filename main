@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+#include "process.h"
+using namespace std;
+void FCFS(vector<Process>&);
+void SJF(vector<Process>&);
+void printTable(const vector<Process>& p) {
+    cout << "\nPID  AT  BT  ST  CT  WT  TAT\n";
+    for (auto x : p) {
+        cout << setw(3) << x.pid
+             << setw(4) << x.arrival
+             << setw(4) << x.burst
+             << setw(4) << x.start
+             << setw(4) << x.completion
+             << setw(4) << x.waiting
+             << setw(5) << x.turnaround << endl;
+    }
+}
+void printGantt(const vector<Process>& p) {
+    cout << "\nGantt Chart:\n|";
+    for (auto x : p)
+        cout << " " << x.pid << " |";
+    cout << "\n";
+    cout << p[0].start;
+    for (auto x : p)
+        cout << setw(4) << x.completion;
+    cout << endl;
+}
+double avgWaiting(const vector<Process>& p) {
+    double sum = 0;
+    for (auto x : p) sum += x.waiting;
+    return sum / p.size();
+}
+int main() {
+    vector<Process> data = {
+        {"P1", 0, 6},
+        {"P2", 1, 8},
+        {"P3", 2, 7},
+        {"P4", 3, 3}
+    };
+    vector<Process> fcfs = data;
+    vector<Process> sjf  = data;
+    FCFS(fcfs);
+    SJF(sjf);
+    cout << "===== FCFS =====";
+    printTable(fcfs);
+    printGantt(fcfs);
+    cout << "Average Waiting Time: " << avgWaiting(fcfs) << endl;
+    cout << "\n===== SJF (Non-preemptive) =====";
+    printTable(sjf);
+    printGantt(sjf);
+    cout << "Average Waiting Time: " << avgWaiting(sjf) << endl;
+    return 0;
+}
