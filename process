@@ -7,12 +7,14 @@ struct Process {
     int arrivalTime;
     int burstTime;
     int startTime;
-    int completionTime;
+    int finishTime;
     int waitingTime;
     int turnaroundTime;
 };
-struct GanttItem {
-    string pid;
-    int endTime;
-};
 #endif
+
+
+
+
+
+
