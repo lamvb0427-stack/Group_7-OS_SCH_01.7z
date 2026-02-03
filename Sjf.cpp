@@ -1,31 +1,38 @@
 #include <vector>
 #include "process.h"
+#include <iostream>
+#include <limits> 
 using namespace std;
 void SJF(vector<Process>& p) {
     int n = p.size();
-    int time = 0, completed = 0;
-    vector<bool> done(n, false);
+    int currentTime = 0, completed = 0;
+    vector<bool> isCompleted(n, false);
     while (completed < n) {
         int idx = -1;
-        int minBurst = 1e9;
-        // LOGIC CHỌN PROCESS THEO BURST TIME
+        int minBurst = numeric_limits<int>::max();
         for (int i = 0; i < n; i++) {
-            if (!done[i] && p[i].arrival <= time && p[i].burst < minBurst) {
-                minBurst = p[i].burst;
-                idx = i;
+           if (!isCompleted[i] && p[i].arrivalTime <= currentTime) {
+                if (p[i].burstTime < minBurst) {
+                    minBurst = p[i].burstTime;
+                    idx = i;
+                }
+                else if (p[i].burstTime == minBurst) {
+                    if (p[i].arrivalTime < p[idx].arrivalTime) {
+                        idx = i;
+                    }
+                }
             }
         }
-        if (idx == -1) {
-            time++;
-            continue;
+       if (idx != -1) {
+          p[idx].startTime = currentTime;
+            p[idx].completionTime = p[idx].startTime + p[idx].burstTime;
+            p[idx].turnaroundTime = p[idx].completionTime - p[idx].arrivalTime;
+            p[idx].waitingTime = p[idx].turnaroundTime - p[idx].burstTime;
+       isCompleted[idx] = true;
+            completed++;
+            currentTime = p[idx].completionTime;
+        } else {
+            currentTime++;
         }
-        p[idx].start = time;
-        time += p[idx].burst;
-        p[idx].completion = time;
-        p[idx].turnaround = p[idx].completion - p[idx].arrival;
-        p[idx].waiting = p[idx].turnaround - p[idx].burst;
-        done[idx] = true;
-        completed++;
     }
 }
-
