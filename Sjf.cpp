@@ -3,7 +3,7 @@
 #include <iostream>
 #include <limits> 
 using namespace std;
-void SJF(vector<Process>& p) {
+void sjfScheduling(std::vector<Process>& p) {
     int n = p.size();
     int currentTime = 0, completed = 0;
     vector<bool> isCompleted(n, false);
