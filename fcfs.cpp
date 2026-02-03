@@ -1,15 +1,22 @@
 #include "process.h"
 #include <vector>
+#include <algorithm>
+#include <iostream>
 using namespace std;
-void FCFS(vector<Process>& p) {
-    int time = 0;
+bool compareArrival(const Process& a, const Process& b) {
+    return a.arrivalTime < b.arrivalTime;
+}
+void fcfsScheduling(vector<Process>& p) {
+    sort(p.begin(), p.end(), compareArrival);
+    int currentTime = 0;
     for (int i = 0; i < p.size(); i++) {
-        if (time < p[i].arrival)
-            time = p[i].arrival;
-        p[i].start = time;
-        time += p[i].burst;
-        p[i].completion = time;
-        p[i].turnaround = p[i].completion - p[i].arrival;
-        p[i].waiting = p[i].turnaround - p[i].burst;
+        if (currentTime < p[i].arrivalTime) {
+            currentTime = p[i].arrivalTime;
+        }
+        p[i].startTime = currentTime;
+        p[i].completionTime = p[i].startTime + p[i].burstTime;
+        p[i].turnaroundTime = p[i].completionTime - p[i].arrivalTime;
+        p[i].waitingTime = p[i].startTime - p[i].arrivalTime;
+        currentTime = p[i].completionTime;
     }
 }
