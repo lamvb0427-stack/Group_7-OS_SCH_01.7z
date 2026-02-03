@@ -1,12 +1,15 @@
 #ifndef PROCESS_H
 #define PROCESS_H
+#include <string>
+#include <iostream>
+using namespace std;
 struct Process {
-    int pid;
+    string pid;
     int arrivalTime;
     int burstTime;
-    int startTime;
-    int completionTime;
-    int waitingTime;
-    int turnaroundTime;
+    int startTime = 0;
+    int completionTime = 0;
+    int waitingTime = 0;
+    int turnaroundTime = 0;
 };
 #endif
