@@ -1,25 +1,77 @@
 #include <iostream>
 #include <vector>
+#include <iomanip>
 #include "process.h"
+#include <algorithm>
 using namespace std;
 void fcfsScheduling(vector<Process>&);
-int main() {
-    vector<Process> processes = {
-        {1, 0, 5},
-        {2, 1, 3},
-        {3, 2, 8},
-        {4, 3, 6}
-    };
-    fcfsScheduling(processes);
-    cout << "PID\tAT\tBT\tST\tCT\tWT\tTAT\n";
-    for (auto p : processes) {
-        cout << p.pid << "\t"
-             << p.arrivalTime << "\t"
-             << p.burstTime << "\t"
-             << p.startTime << "\t"
-             << p.completionTime << "\t"
-             << p.waitingTime << "\t"
-             << p.turnaroundTime << endl;
+void sjfScheduling(vector<Process>&);
+void printTable(const vector<Process>& p) {
+    cout << left << setw(10) << "PID" 
+         << setw(10) << "Arrival" 
+         << setw(10) << "Burst" 
+         << setw(10) << "Start" 
+         << setw(10) << "Finish" 
+         << setw(10) << "Wait" 
+         << setw(10) << "TurnAround" << endl;
+    for (const auto& x : p) {
+        cout << left << setw(10) << x.pid
+             << setw(10) << x.arrivalTime
+             << setw(10) << x.burstTime
+             << setw(10) << x.startTime
+             << setw(10) << x.completionTime
+             << setw(10) << x.waitingTime
+             << setw(10) << x.turnaroundTime << endl;
     }
+}
+void printGantt(const vector<Process>& p) {
+    vector<Process> temp = p;
+    sort(temp.begin(), temp.end(), [](Process a, Process b) {
+        return a.startTime < b.startTime;
+    });
+    cout << "\n[ Gantt Chart ]\n";
+    cout << " ";
+    for (const auto& x : temp) {
+        cout << "---" << x.pid << "----";
+    }
+    cout << "\n|";
+    for (const auto& x : temp) {
+        cout << "   " << x.pid << "   |";
+    }
+    cout << "\n ";
+    for (const auto& x : temp) {
+        cout << "--------";
+    }
+    cout << "\n";
+    cout << temp[0].startTime;
+    for (const auto& x : temp) {
+        cout << setw(9) << x.completionTime;
+    }
+    cout << endl;
+}
+double avgWaiting(const vector<Process>& p) {
+    double sum = 0;
+    for (const auto& x : p) sum += x.waitingTime;
+    return sum / p.size();
+}
+int main() {
+    vector<Process> data = {
+        {"P1", 0, 6},
+        {"P2", 1, 8},
+        {"P3", 2, 7},
+        {"P4", 3, 3}
+    };
+    vector<Process> fcfsData = data;
+    vector<Process> sjfData = data;
+    fcfsScheduling(fcfsData);
+    cout << "\n================= FCFS ALGORITHM =================\n";
+    printTable(fcfsData);
+    printGantt(fcfsData);
+    cout << "\nAverage Waiting Time: " << avgWaiting(fcfsData) << endl;
+    sjfScheduling(sjfData);
+    cout << "\n\n================= SJF ALGORITHM (Non-Preemptive) =================\n";
+    printTable(sjfData);
+    printGantt(sjfData);
+    cout << "\nAverage Waiting Time: " << avgWaiting(sjfData) << endl;
     return 0;
 }
