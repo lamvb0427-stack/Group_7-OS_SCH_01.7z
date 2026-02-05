@@ -55,12 +55,14 @@ double avgWaiting(const vector<Process>& p) {
     return sum / p.size();
 }
 int main() {
-    vector<Process> data = {
-        {"P1", 0, 6},
-        {"P2", 1, 8},
-        {"P3", 2, 7},
-        {"P4", 3, 3}
-    };
+    int n;
+    cout << "Nhap so luong tien trinh: ";
+    cin >> n;
+    vector<Process> data(n);
+    for (int i = 0; i < n; i++) {
+        cout << "Nhap PID, Arrival Time, Burst Time cho tien trinh " << i + 1 << ": ";
+        cin >> data[i].pid >> data[i].arrivalTime >> data[i].burstTime;
+    }
     vector<Process> fcfsData = data;
     vector<Process> sjfData = data;
     fcfsScheduling(fcfsData);
